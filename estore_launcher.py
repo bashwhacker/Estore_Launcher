@@ -79,7 +79,6 @@ def cello():
         driver.quit()
         messagebox.showerror('Cello', 'Login problem')
 
-
     try:
         driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div/div/div[4]/button').click()
         print('login after')
@@ -102,11 +101,14 @@ def cello():
     driver.switch_to.frame(iframe)
     do_list = get_form_text()
     if len(do_list) > 0:
-        driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/div/input[1]').send_keys(do_list)
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/div/input[1]').send_keys(
+            str(do_list).strip('[]'))
+    else:
+        driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/span[2]').click()
+        driver.find_element(By.XPATH, '/html/body/div[52]/div/div[2]/div[2]/div/span[1]').click()
 
-    driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/span[2]').click()
-    driver.find_element(By.XPATH, '/html/body/div[52]/div/div[2]/div/div/span[1]').click()
     driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[9]/button[2]').click()
+
     time.sleep(3)
     element = wait.until(EC.element_to_be_clickable(
         (By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[2]/div/div[1]/div[1]/div/div[1]/div')))
