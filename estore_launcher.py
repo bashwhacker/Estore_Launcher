@@ -99,6 +99,7 @@ def cello():
     time.sleep(6)
     iframe = driver.find_element(By.TAG_NAME, 'iframe')
     driver.switch_to.frame(iframe)
+    # Ввод списка DO
     do_list = get_form_text()
     if len(do_list) > 0:
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/div/input[1]').send_keys(
@@ -114,6 +115,7 @@ def cello():
         (By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[2]/div/div[1]/div[1]/div/div[1]/div')))
     driver.find_element(By.ID, 'btn_multiExlDown').click()
     time.sleep(1)
+    # Ожидание скачивания файла
     while True:
         list_of_files = glob.glob(os.path.join(os.path.join(os.path.join(os.getcwd()), 'TOListWithItemInfo_*.xlsx')))
         time.sleep(5)
@@ -121,7 +123,7 @@ def cello():
             break
 
     driver.switch_to.default_content()
-    # закрываем вкладку
+    # закрываем вкладку T/O list
     driver.find_element(By.XPATH, '/html/body/div[1]/main/div[2]/div[1]/div[2]/div[1]/ul/li[3]/div').click()
 
     driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[1]').click()
@@ -269,7 +271,7 @@ window.columnconfigure([0, 1], minsize=60, pad=60, weight=1)
 window.rowconfigure([0, 1, 2], minsize=50, weight=2)
 lbl = Label(window, text="Input DO No.:", font="Courier 16")
 lbl.grid(column=0, row=0)
-txt = scrolledtext.ScrolledText(window, width=40, height=50)
+txt = scrolledtext.ScrolledText(window, width=20, height=50, font="Courier 16")
 txt.grid(column=0, row=1)
 cello_btn = Button(window, text="get from Cello", command=parse_wms, font="Courier 12", fg="white", bg="Green")
 
