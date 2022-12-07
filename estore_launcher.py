@@ -85,82 +85,99 @@ def cello():
     except:
         print('login normal')
 
-    # TMS
-    element = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="menuTBox"]/section/div[1]/ul/li[5]/a')))
-    driver.find_element(By.XPATH, '//*[@id="menuTBox"]/section/div[1]/ul/li[5]/a').click()
-    # Prime
-    element = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="sideMenu"]/section/ul/li[10]/label/div/p')))
-    driver.find_element(By.XPATH, '//*[@id="sideMenu"]/section/ul/li[10]/label/div/p').click()
-    # Transport Order
-    driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div/section/ul/li[10]/ul/li[2]/label/div/p').click()
-    # T/O List
-    driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div/section/ul/li[10]/ul/li[2]/ul/li/p').click()
+    def to_download():
 
-    time.sleep(6)
-    iframe = driver.find_element(By.TAG_NAME, 'iframe')
-    driver.switch_to.frame(iframe)
-    # Ввод списка DO
-    do_list = get_form_text()
-    if len(do_list) > 0:
-        driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/div/input[1]').send_keys(
-            str(do_list).strip('[]'))
-    else:
-        driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/span[2]').click()
-        driver.find_element(By.XPATH, '/html/body/div[52]/div/div[2]/div[2]/div/span[1]').click()
+        # TMS
+        element = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="menuTBox"]/section/div[1]/ul/li[5]/a')))
+        driver.find_element(By.XPATH, '//*[@id="menuTBox"]/section/div[1]/ul/li[5]/a').click()
+        # Prime
+        element = wait.until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@id="sideMenu"]/section/ul/li[10]/label/div/p')))
+        driver.find_element(By.XPATH, '//*[@id="sideMenu"]/section/ul/li[10]/label/div/p').click()
+        # Transport Order
+        driver.find_element(By.XPATH,
+                            '/html/body/div[1]/main/div[1]/div/section/ul/li[10]/ul/li[2]/label/div/p').click()
+        # T/O List
+        driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div/section/ul/li[10]/ul/li[2]/ul/li/p').click()
 
-    driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[9]/button[2]').click()
+        time.sleep(6)
+        iframe = driver.find_element(By.TAG_NAME, 'iframe')
+        driver.switch_to.frame(iframe)
+        # Ввод списка DO
+        do_list = get_form_text()
+        if len(do_list) > 0:
+            driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/div/input[1]').send_keys(
+                str(do_list).strip('[]'))
+        else:
+            driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/span[2]').click()
+            driver.find_element(By.XPATH, '/html/body/div[52]/div/div[2]/div[2]/div/span[1]').click()
 
-    time.sleep(3)
-    element = wait.until(EC.element_to_be_clickable(
-        (By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[2]/div/div[1]/div[1]/div/div[1]/div')))
-    driver.find_element(By.ID, 'btn_multiExlDown').click()
-    time.sleep(1)
-    # Ожидание скачивания файла
-    while True:
-        list_of_files = glob.glob(os.path.join(os.path.join(os.path.join(os.getcwd()), 'TOListWithItemInfo_*.xlsx')))
-        time.sleep(5)
-        if len(list_of_files) > 0:
-            break
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[9]/button[2]').click()
 
-    driver.switch_to.default_content()
-    # закрываем вкладку T/O list
-    driver.find_element(By.XPATH, '/html/body/div[1]/main/div[2]/div[1]/div[2]/div[1]/ul/li[3]/div').click()
+        time.sleep(3)
+        element = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[2]/div/div[1]/div[1]/div/div[1]/div')))
+        driver.find_element(By.ID, 'btn_multiExlDown').click()
+        time.sleep(1)
+        # Ожидание скачивания файла
+        while True:
+            list_of_files = glob.glob(
+                os.path.join(os.path.join(os.path.join(os.getcwd()), 'TOListWithItemInfo_*.xlsx')))
+            time.sleep(5)
+            if len(list_of_files) > 0:
+                break
 
-    driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[1]').click()
+        driver.switch_to.default_content()
+        # закрываем вкладку T/O list
+        driver.find_element(By.XPATH, '/html/body/div[1]/main/div[2]/div[1]/div[2]/div[1]/ul/li[3]/div').click()
 
-    driver.find_element(By.XPATH,
-                        '/html/body/div[1]/main/div/div[2]/div[1]/div[1]/div[2]/section/div[1]/ul/li[1]').click()
-    time.sleep(6)
-    iframe = driver.find_element(By.TAG_NAME, 'iframe')
-    driver.switch_to.frame(iframe)
-    driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/div/div/div[3]/div/div[1]/div').click()
-    driver.find_element(By.XPATH, '/html/div[1]/div[3]/button[3]').click()
-    driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[2]/div/div/div[3]/div/div[1]/div').click()
-    driver.find_element(By.XPATH, '/html/div[2]/div[3]/button[3]').click()
-    driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[3]/button[2]').click()
-    driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div').click()
+    #to_download()
 
-    drop_down = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div')
-    ActionChains(driver).move_to_element(drop_down).perform()
-    ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
-    time.sleep(0.2)
-    ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
-    ActionChains(driver).send_keys(Keys.ENTER).perform()
+    def wms_download():
+        # WMS
+        driver.find_element(By.XPATH, '//*[@id = "menuTBox"]/section/div[1]/ul/li[4]/a').click()
+        # Outbound
+        driver.find_element(By.XPATH,
+                            '/html/body/div[1]/main/div[1]/div/section/ul/li[6]/label/div/p').click()
+        # Serial Scan
+        driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div/section/ul/li[6]/ul/li[6]/label/div/p').click()
+        # Order
+        driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div/section/ul/li[6]/ul/li[6]/ul/li[1]/p').click()
 
-    driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[14]/button[2]').click()
-    time.sleep(2)
-    element = wait.until(EC.element_to_be_clickable(
-        (By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[2]/div/div[1]/div[1]/div/div[1]/div')))
-    driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[1]/div/div[1]/div/div/div/div').click()
+        time.sleep(6)
+        iframe = driver.find_element(By.TAG_NAME, 'iframe')
+        driver.switch_to.frame(iframe)
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/div/div/div[3]/div/div[1]/div').click()
+        driver.find_element(By.XPATH, '/html/div[1]/div[3]/button[3]').click()
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[2]/div/div/div[3]/div/div[1]/div').click()
+        driver.find_element(By.XPATH, '/html/div[2]/div[3]/button[3]').click()
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[3]/button[2]').click()
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div').click()
 
-    driver.find_element(By.ID, 'btn_exlDownAllMiw').click()
-    time.sleep(2)
-    while True:
-        list_of_files = glob.glob(
-            os.path.join(os.path.join(os.path.join(os.getcwd()), 'wmsOrderSerialScan_AllInfo_*.xls')))
-        time.sleep(5)
-        if len(list_of_files) > 0:
-            break
+        drop_down = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div')
+        ActionChains(driver).move_to_element(drop_down).perform()
+        ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
+        time.sleep(0.2)
+        ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
+        ActionChains(driver).send_keys(Keys.ENTER).perform()
+
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[14]/button[2]').click()
+        time.sleep(2)
+        element = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[2]/div/div[1]/div[1]/div/div[1]/div')))
+        driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[1]/div/div[1]/div/div/div/div').click()
+
+        driver.find_element(By.ID, 'btn_exlDownAllMiw').click()
+        time.sleep(2)
+        while True:
+            list_of_files = glob.glob(
+                os.path.join(os.path.join(os.path.join(os.getcwd()), 'wmsOrderSerialScan_AllInfo_*.xls')))
+            time.sleep(5)
+            if len(list_of_files) > 0:
+                break
+
+    wms_download()
+
     try:
         driver.stop_client()
         driver.close()
@@ -170,7 +187,7 @@ def cello():
         messagebox.showerror('Ошибка закрытия браузера', 'Браузер не закрылся после выполнения!')
 
 
-# cello()
+
 
 
 def parse_tolist():
