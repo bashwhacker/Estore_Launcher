@@ -12,8 +12,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_auto_update import check_driver
 import glob
 import os
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 import os.path
 import win32com.client
 import pathlib
@@ -164,14 +162,17 @@ def cello():
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[2]/div/div/div[3]/div/div[1]/div').click()
         driver.find_element(By.XPATH, '/html/div[2]/div[3]/button[3]').click()
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[3]/button[2]').click()
-        driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div').click()
-        time.sleep(0.5)
-        drop_down = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div')
-        ActionChains(driver).move_to_element(drop_down).perform()
-        ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
-        time.sleep(0.2)
-        ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
-        ActionChains(driver).send_keys(Keys.ENTER).perform()
+        #driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div').click()
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]').click()
+        driver.find_element(By.XPATH, '/html/body/div[23]/div/div/div/div[2]/div/div[4]/span')
+
+
+        #drop_down = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div')
+        #ActionChains(driver).move_to_element(drop_down).perform()
+        #ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
+        #time.sleep(0.2)
+        #ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
+        #ActionChains(driver).send_keys(Keys.ENTER).perform()
         # Ввод списка DO
         do_list = get_form_text()
         if len(do_list) > 0:
@@ -212,7 +213,6 @@ def parse_tolist():
         os.remove(Path(pathlib.Path.cwd(), 'TOListWithItemInfo.xlsx'))
     try:
         list_of_files = glob.glob(os.path.join(os.path.join(os.path.join(os.getcwd()), 'TOListWithItemInfo_*.xlsx')))
-        # list_of_files = glob.glob('C:\\Users\\K.Zakharov\\PycharmProjects\\estore\\wmsOrderSerialScan_AllInfo_*.xls')
         wmsbook = max(list_of_files, key=os.path.getctime)
     except ValueError:
         messagebox.showerror('Не найден файл', 'Файл(ы) TOListWithItemInfo_* не найдены в папке!')
@@ -274,9 +274,14 @@ def runup_macro():
     excel = win32com.client.Dispatch("Excel.Application")
     excel.Visible = False
     excel.DisplayAlerts = False
-    excel.Workbooks.Open(os.path.abspath("estore_macro.xlsb"), ReadOnly=1)
-    excel.Application.Run("estore_macro.xlsb!Module1.create_doc_act")
-    excel.Application.Quit()  # Comment this out if your excel script closes
+    try:
+        wb = excel.Workbooks.Open(os.path.abspath("estore_macro.xlsb"), ReadOnly=1)
+        macros = excel.Application.Run("estore_macro.xlsb!Module1.create_doc_act")
+        wb.Close(False)
+        print("акты созданы", file=TextWrapper(txt_log))
+        print("работа завершена", file=TextWrapper(txt_log))
+    except:
+        messagebox.showerror('file not found', 'Файл с макросом не найден')
 
 
 def get_form_text() -> list[str]:
@@ -310,14 +315,13 @@ txt = scrolledtext.ScrolledText(window, width=20, height=50, font="Courier 16")
 txt.grid(column=0, row=1)
 txt_log = scrolledtext.ScrolledText(window, width=20, height=50, font="Courier 12", bg="black", fg="green")
 txt_log.grid(column=2, row=1)
-txt_log.update()
 cello_btn = Button(window, text="get from Cello", command=parse_wms, font="Courier 12", fg="white", bg="Green")
 cello_btn.grid(column=1, row=2, sticky='nsew')
 clean_btn = Button(window, text="Cleanup form", command=cleanup, bg="#aeb6bf", fg="white")
 clean_btn.grid(column=0, row=2, sticky='NSWE')
 macro_btn = Button(window, text="START MACROS", command=runup_macro, bg="#748efa", fg="white")
 macro_btn.grid(column=2, row=2, sticky='nsew')
-window.mainloop()
+window.update()
 
 class TextWrapper:
     text_field: tk.Text
@@ -330,6 +334,6 @@ class TextWrapper:
 
     def flush(self):
         self.text_field.update()
-
+window.mainloop()
 
 
