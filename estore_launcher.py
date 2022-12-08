@@ -19,6 +19,9 @@ import win32com.client
 import pathlib
 from pathlib import Path
 from tkinter import *
+from contextlib import redirect_stdout
+
+
 
 current_time = datetime.datetime.now()
 dir_path = pathlib.Path.cwd()
@@ -29,14 +32,12 @@ with open('cello.txt', 'r', encoding='utf-8') as f:
         line = line.strip()
         login, password, domain = line.split('::')
 
-print(login, domain)
-
 
 def cello():
     options = Options()
-    # options.add_argument("--headless")  # Runs Chrome in headless mode.
+    #options.add_argument("--headless")  # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox')  # Bypass OS security model
-    options.add_argument('--disable-gpu')  # applicable to Windows os only
+    #options.add_argument('--disable-gpu')  # applicable to Windows os only
     options.add_argument('start-maximized')
     options.add_argument('disable-infobars')
     options.add_argument('--disable-extensions')
@@ -47,15 +48,18 @@ def cello():
         "download.prompt_for_download": False,
         "download.directory_upgrade": True,
     })
-    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    #options.add_experimental_option('excludeSwitches')
     driver = webdriver.Chrome(options=options)
     wait = WebDriverWait(driver, 20)
+    driver.implicitly_wait(20)
     try:
         driver.get(domain)
-        time.sleep(4)
+        #time.sleep(4)
+        print("browser opened", file=TextWrapper(txt_log))
     except:
         messagebox.showerror('Ошибка открытия браузера', 'Браузер не открылся!')
         print('ошибка - не открылся браузер')
+        print("ошибка - не открылся браузер", file=TextWrapper(txt_log))
 
         try:
             driver.stop_client()
@@ -68,7 +72,7 @@ def cello():
     driver.find_element(By.ID, "loginId").send_keys(login)
     driver.find_element(By.ID, "loginPw").send_keys(password)
     driver.find_element(By.ID, "btn-login").click()
-    wait = WebDriverWait(driver, 20)
+
     try:
         element = wait.until(EC.element_to_be_clickable((By.ID, 'btn-ok')))
         driver.find_element(By.ID, 'btn-ok').click()
@@ -82,16 +86,18 @@ def cello():
     try:
         driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div/div/div[4]/button').click()
         print('login after')
+        print("login 2", file=TextWrapper(txt_log))
     except:
         print('login normal')
+        print("login 1", file=TextWrapper(txt_log))
 
     def to_download():
 
         # TMS
-        element = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="menuTBox"]/section/div[1]/ul/li[5]/a')))
+        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="menuTBox"]/section/div[1]/ul/li[5]/a')))
         driver.find_element(By.XPATH, '//*[@id="menuTBox"]/section/div[1]/ul/li[5]/a').click()
         # Prime
-        element = wait.until(
+        wait.until(
             EC.element_to_be_clickable((By.XPATH, '//*[@id="sideMenu"]/section/ul/li[10]/label/div/p')))
         driver.find_element(By.XPATH, '//*[@id="sideMenu"]/section/ul/li[10]/label/div/p').click()
         # Transport Order
@@ -130,42 +136,54 @@ def cello():
         driver.switch_to.default_content()
         # закрываем вкладку T/O list
         driver.find_element(By.XPATH, '/html/body/div[1]/main/div[2]/div[1]/div[2]/div[1]/ul/li[3]/div').click()
+        print("TOList file ok", file=TextWrapper(txt_log))
 
-    #to_download()
+    to_download()
 
     def wms_download():
         # WMS
-        driver.find_element(By.XPATH, '//*[@id = "menuTBox"]/section/div[1]/ul/li[4]/a').click()
+        driver.switch_to.default_content()
+        driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[1]').click()
+        wait.until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div[2]/section/div[1]/ul/li[4]')))
+        driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[2]/section/div[1]/ul/li[4]').click()
         # Outbound
-        driver.find_element(By.XPATH,
-                            '/html/body/div[1]/main/div[1]/div/section/ul/li[6]/label/div/p').click()
+        wait.until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/main/div[1]/div/section/ul/li[6]/label/div/p')))
+        driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div/section/ul/li[6]/label/div/p').click()
         # Serial Scan
         driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div/section/ul/li[6]/ul/li[6]/label/div/p').click()
         # Order
         driver.find_element(By.XPATH, '/html/body/div[1]/main/div[1]/div/section/ul/li[6]/ul/li[6]/ul/li[1]/p').click()
 
-        time.sleep(6)
+        time.sleep(2)
+        driver.find_element(By.TAG_NAME, 'iframe')
         iframe = driver.find_element(By.TAG_NAME, 'iframe')
         driver.switch_to.frame(iframe)
+        # calendar
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/div/div/div[3]/div/div[1]/div').click()
         driver.find_element(By.XPATH, '/html/div[1]/div[3]/button[3]').click()
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[2]/div/div/div[3]/div/div[1]/div').click()
         driver.find_element(By.XPATH, '/html/div[2]/div[3]/button[3]').click()
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[3]/button[2]').click()
         driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div').click()
-
+        time.sleep(0.5)
         drop_down = driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]/div')
         ActionChains(driver).move_to_element(drop_down).perform()
         ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
         time.sleep(0.2)
         ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
         ActionChains(driver).send_keys(Keys.ENTER).perform()
+        # Ввод списка DO
+        do_list = get_form_text()
+        if len(do_list) > 0:
+            driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[3]/div/input[1]').send_keys(
+                str(do_list).strip('[]'))
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[15]/button[2]').click()
 
-        driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[14]/button[2]').click()
         time.sleep(2)
         element = wait.until(EC.element_to_be_clickable(
             (By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[2]/div/div[1]/div[1]/div/div[1]/div')))
-        driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[1]/div/div[1]/div/div/div/div').click()
+        driver.find_element(By.XPATH,
+                            '/html/body/div[4]/div/div[2]/div/div[3]/div[1]/div/div[1]/div/div/div/div').click()
 
         driver.find_element(By.ID, 'btn_exlDownAllMiw').click()
         time.sleep(2)
@@ -175,6 +193,7 @@ def cello():
             time.sleep(5)
             if len(list_of_files) > 0:
                 break
+        print("wms file ok", file=TextWrapper(txt_log))
 
     wms_download()
 
@@ -185,9 +204,6 @@ def cello():
     except:
         print('браузер не закрыт')
         messagebox.showerror('Ошибка закрытия браузера', 'Браузер не закрылся после выполнения!')
-
-
-
 
 
 def parse_tolist():
@@ -284,17 +300,36 @@ def cleanup():
 window = tk.Tk()
 window.title("Estore")
 window.geometry('620x400')
-window.columnconfigure([0, 1], minsize=60, pad=60, weight=1)
-window.rowconfigure([0, 1, 2], minsize=50, weight=2)
+window.columnconfigure([0, 1, 2], minsize=60, pad=60, weight=1)
+window.rowconfigure([0, 1, 2], minsize=60, weight=2)
 lbl = Label(window, text="Input DO No.:", font="Courier 16")
 lbl.grid(column=0, row=0)
+lbl_log = Label(window, text="Log:", font="Courier 14")
+lbl_log.grid(column=2, row=0)
 txt = scrolledtext.ScrolledText(window, width=20, height=50, font="Courier 16")
 txt.grid(column=0, row=1)
+txt_log = scrolledtext.ScrolledText(window, width=20, height=50, font="Courier 12", bg="black", fg="green")
+txt_log.grid(column=2, row=1)
+txt_log.update()
 cello_btn = Button(window, text="get from Cello", command=parse_wms, font="Courier 12", fg="white", bg="Green")
-
+cello_btn.grid(column=1, row=2, sticky='nsew')
 clean_btn = Button(window, text="Cleanup form", command=cleanup, bg="#aeb6bf", fg="white")
 clean_btn.grid(column=0, row=2, sticky='NSWE')
-cello_btn.grid(column=1, row=1, sticky='nsew')
 macro_btn = Button(window, text="START MACROS", command=runup_macro, bg="#748efa", fg="white")
-macro_btn.grid(column=1, row=2, sticky='nsew')
+macro_btn.grid(column=2, row=2, sticky='nsew')
 window.mainloop()
+
+class TextWrapper:
+    text_field: tk.Text
+
+    def __init__(self, text_field: tk.Text):
+        self.text_field = text_field
+
+    def write(self, text: str):
+        self.text_field.insert(tk.END, text)
+
+    def flush(self):
+        self.text_field.update()
+
+
+
