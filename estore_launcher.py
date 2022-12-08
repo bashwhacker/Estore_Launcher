@@ -17,7 +17,7 @@ import win32com.client
 import pathlib
 from pathlib import Path
 from tkinter import *
-from contextlib import redirect_stdout
+#from contextlib import redirect_stdout
 
 
 
@@ -33,7 +33,7 @@ with open('cello.txt', 'r', encoding='utf-8') as f:
 
 def cello():
     options = Options()
-    #options.add_argument("--headless")  # Runs Chrome in headless mode.
+    options.add_argument("--headless")  # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox')  # Bypass OS security model
     #options.add_argument('--disable-gpu')  # applicable to Windows os only
     options.add_argument('start-maximized')
