@@ -159,6 +159,7 @@ def cello():
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[2]/div/div/div[3]/div/div[1]/div').click()
         driver.find_element(By.XPATH, '/html/div[2]/div[3]/button[3]').click()
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[3]/button[2]').click()
+        # completed
         driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]').click()
         wait.until(
             EC.element_to_be_clickable((By.XPATH, '/html/body/div[23]/div/div/div/div[2]/div/div[4]/span')))
