@@ -106,6 +106,7 @@ def cello():
         if do_list != ['']:
             driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/div/input[1]').send_keys(
                 str(do_list).strip('[]'))
+        # для скачивания по диапазону дат без DO
         # else:
         #    driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/span[2]').click()
         #    driver.find_element(By.XPATH, '/html/body/div[52]/div/div[2]/div[2]/div/span[1]').click()
@@ -158,8 +159,10 @@ def cello():
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[2]/div/div/div[3]/div/div[1]/div').click()
         driver.find_element(By.XPATH, '/html/div[2]/div[3]/button[3]').click()
         driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[3]/button[2]').click()
-        #driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]').click()
-        #driver.find_element(By.XPATH, '/html/body/div[23]/div/div/div/div[2]/div/div[4]/span')
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[7]/div/div/div/div[2]').click()
+        wait.until(
+            EC.element_to_be_clickable((By.XPATH, '/html/body/div[23]/div/div/div/div[2]/div/div[4]/span')))
+        driver.find_element(By.XPATH, '/html/body/div[23]/div/div/div/div[2]/div/div[4]/span').click()
 
         # Ввод списка DO
         do_list = get_form_text()
@@ -167,7 +170,7 @@ def cello():
             driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[3]/div/input[1]').send_keys(str(do_list).strip('[]'))
         time.sleep(1)
         driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[15]/button[2]').click()
-        time.sleep(1)
+        time.sleep(2)
         wait.until(EC.element_to_be_clickable(
             (By.XPATH, '/html/body/div[4]/div/div[2]/div/div[3]/div[2]/div/div[1]/div[1]/div/div[1]/div')))
         driver.find_element(By.XPATH,
