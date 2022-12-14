@@ -27,7 +27,7 @@ with open('cello.txt', 'r', encoding='utf-8') as f:
 
 def cello():
     options = Options()
-    options.add_argument("--headless")  # Runs Chrome in headless mode.
+    # options.add_argument("--headless")  # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox')  # Bypass OS security model
     options.add_argument('start-maximized')
     options.add_argument('disable-infobars')
@@ -167,8 +167,9 @@ def cello():
 
         # Ввод списка DO
         do_list = get_form_text()
-        if do_list != ['']:
-            driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[3]/div/input[1]').send_keys(str(do_list).strip('[]'))
+        driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[3]/div/input[2]').click()
+        driver.find_element(By.XPATH, '/html/body/div[24]/div/div[2]/textarea').send_keys(str(do_list).strip('[]'))
+        driver.find_element(By.XPATH, '/html/body/div[24]/div/div[2]/input[1]').click()
         time.sleep(1)
         driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div[15]/button[2]').click()
         time.sleep(2)
